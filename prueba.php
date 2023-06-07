@@ -118,25 +118,48 @@ include 'conexion.php';
         <h2 class="sr-only">Products</h2>
 
         <div class="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 xl:gap-x-8">
-            <a href="#" class="group">
-                <div class="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-lg bg-gray-200 xl:aspect-h-8 xl:aspect-w-7">
-                    <img src="https://tailwindui.com/img/ecommerce-images/category-page-04-image-card-01.jpg" alt="Tall slender porcelain bottle with natural clay textured body and cork stopper." class="h-full w-full object-cover object-center group-hover:opacity-75">
-                </div>
-                <?php
-                // Ejecutar consulta SQL para obtener los nombres de los productos
-                $sql = "SELECT name FROM users";
-                $result = $conn->query($sql);
 
-                // Verificar si hay resultados y mostrar los nombres de los productos
-                if ($result->num_rows > 0) {
-                    while ($row = $result->fetch_assoc()) {
-                        $nombre = $row["name"];
-                        echo '<h3 class="mt-4 text-sm text-gray-700">' . $nombre . '</h3>';
+                <?php
+                // Establecer el ID inicial y final
+                $idInicial = 1; // Primer ID a consultar
+                $idFinal = 3; // Último ID a consultar
+
+                // Ejecutar consulta SQL para obtener el nombre, precio e imagen de los productos en el rango de IDs especificado
+                $id = $idInicial;
+                while ($id <= $idFinal) {
+                    $sql = "SELECT nombre, precio, imagen FROM products WHERE idproducts = $id";
+                    $result = $conn->query($sql);
+
+                    // Verificar si hay resultados y mostrar el nombre, precio e imagen del producto
+                    if ($result->num_rows > 0) {
+                        while ($row = $result->fetch_assoc()) {
+                            $nombre = $row["nombre"];
+                            $precio = $row["precio"];
+                            $imagen = $row["imagen"];
+
+                            echo '<a href="#" class="group">';
+                            echo '<div class="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-lg bg-gray-200 xl:aspect-h-8 xl:aspect-w-7">';
+
+                            echo '<img src="data:image/jpeg;base64,' . base64_encode($imagen) . '" alt="' . $nombre . '" class="h-56 w-full object-cover object-center group-hover:opacity-75 border-2 border-black">';
+
+                            echo '</div>';
+
+                            echo '<h3 class="mt-4 text-lg text-gray-700">' . $nombre .'</h3>';
+                            echo '<p class="mt-1 text-lg font-medium text-gray-900">' . $precio .  "$". '</p>';
+
+                            echo '</a>';
+
+
+                        }
+                    } else {
+                        echo "No se encontró el producto con el ID $id.";
                     }
-                } else {
-                    echo "No se encontraron productos.";
+
+                    $id++;
                 }
                 ?>
+
+
 
             </a>
             <a href="#" class="group">
